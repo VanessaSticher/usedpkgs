@@ -6,22 +6,22 @@ program define run_log, rclass
 	*Start log
 	cap drop `1'.log
 	log using `1', replace text
-	*Run code (with capture)
+	*Run code with capture
 	cap `2'
 	local rc = _rc
 	*Close log
 	log close
 	*Return error code from running command
-	return local rc `rc'
+	return local rc = `rc'
 end
 
-*Find missing package in log: log_missing_pkg [logname]
+
+*Find missing package information in log file: log_missing_pkg [logname]
 program define log_missing_pkg, rclass
-	*Start with empty local
 	local missing_command = ""
 	*Read log file
-	file open run_log using `1'.log, read
-	file read run_log line
+	file open logname using `1'.log, read
+	file read logname line
 	while r(eof)==0 {
 	*Find error message about missing command in log
 		if strpos(`"`line'"', " is unrecognized")!=0 {
@@ -30,7 +30,7 @@ program define log_missing_pkg, rclass
 			local end = strpos(`"`line'"', " is unrecognized")
 			local length = `end'-`start'
 			local missing_command = substr(`"`line'"', `start', `length')
-			di "`missing_command'"	//delete later
+			di "Missing package: `missing_command'"	//delete later
 		}
 		else if strpos(`"`line'"', " requires the ")!=0{
 			di `"`line'"'	//delete later
@@ -38,12 +38,12 @@ program define log_missing_pkg, rclass
 			local end = strpos(`"`line'"', " package")
 			local length = `end'-`start'
 			local missing_command = substr(`"`line'"', `start', `length')
-			di "`missing_command'"	//delete later			
+			di "Missing package: `missing_command'"	//delete later			
 		}
-		file read run_log line
+		file read logname line
 	}
-	file close run_log
-	*Return
+	file close logname
+	*Return missing package name
 	return local missing_command `"`missing_command'"'
 end
 
@@ -52,15 +52,12 @@ end
 program define install_dep
 	* Try to install from SSC
 	cap ssc install `1'
-	local rc_install_package = _rc
-	di "Step 3a: Installation of missing package: error code `rc_install_package'"
 	* Check if package works
 	preserve
 		sysuse auto
 		run_log "installlog" "`1' price mpg"
 	restore
-	local rc_check_package = r(rc)
-	di "Step 3b: Check installed package: error code `rc_check_package'"
+	local rc_check_package = `r(rc)'
 	* If error
 	if `rc_check_package'!=0{
 		* Find missing dependency in log
@@ -68,6 +65,7 @@ program define install_dep
 		local missing_command = "`r(missing_command)'"
 		di "Missing package: `r(missing_command)'"		//delete later
 		if "`missing_command'" != ""{
+			file write file_ados "`missing_command', "
 			ssc install "`missing_command'"
 			local rc = _rc
 		}
@@ -82,7 +80,7 @@ end
 
 
 ***********************************************************************************************************
-***												FUNCTIONS												***
+***												MAIN PROGRAM											***
 ***********************************************************************************************************
 
 
@@ -135,7 +133,7 @@ while `rc'==199{
 		di "Step 1: Find missing package in log file: `missing_command'"		//delete later
 		*Add missing command to list of ado files
 		di "Step 2: Write missing package to file"
-		file write file_ados "`missing_command'"
+		file write file_ados "`missing_command', "
 		*Try to install missing command
 		di "Step 3: Install `missing_command'"
 		install_dep `missing_command'		
