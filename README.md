@@ -1,7 +1,17 @@
 # usedpgks
 This Stata ado-file creates a list with all packages used in the provided do-file(s).
 
-## Future
+
+## Installation
+...
+
+## Usage
+### Create custom crosswalk file
+...
+### Example
+...
+
+## Future Adjustments
 1. Improve installation of dependencies:
 a. list of common packages and their dependencies (e.g. reghdfe required ftools)
 b. reading error messages from errors occurring during installation
