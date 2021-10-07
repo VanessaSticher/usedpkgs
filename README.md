@@ -21,8 +21,6 @@ Or install from github using the [github package](https://github.com/haghish/git
 ...
 
 ## Future Adjustments
-1. Improve installation of dependencies:
-a. list of common packages and their dependencies (e.g. reghdfe required ftools)
-b. reading error messages from errors occurring during installation
-2. Choose to keep the ado folder
+1. Improve installation of dependencies: create list of common packages and their dependencies (e.g. reghdfe requires ftools) and install dependencies first
+2. Choose to keep or delete the ado folder
 3. Assert that it works for do-files calling other do-files
