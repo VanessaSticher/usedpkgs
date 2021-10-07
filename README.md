@@ -3,10 +3,19 @@ This Stata ado-file creates a list with all packages used in the provided do-fil
 
 
 ## Installation
-...
+Install from github:
+   ```stata
+   net install ftools, from("https://raw.githubusercontent.com/VanessaSticher/usedprks/main/src/")
+   ```    
+
+Or install from github using the [github package](https://github.com/haghish/github):
+   ```stata
+   github install VanessaSticher/usedpgks
+   ```  
+
 
 ## Usage
-### Create custom crosswalk file
+### General
 ...
 ### Example
 ...
