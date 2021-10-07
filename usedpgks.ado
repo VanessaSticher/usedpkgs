@@ -2,13 +2,34 @@
 
 * Program usedpkgs
 program define usedpkg 
-	version 16 
+	version 16
+	syntax anything, [filename(str) foldername(str) replace keepfolder] 
 	preserve 
 	qui { 
 		
-		***DEFINE
-		local foldername = "ado_usedpkgs"
-		local filename = "packages_list"
+		***OPTIONS
+		* File name
+		if "`filename'"==""{
+			local filename = "packages_list"
+		}
+		capture confirm string `filename'
+        	if _rc {
+                	di as error "filename() must be a string"
+                        error 198
+		}
+
+		* Forder name
+		if "`foldername'"==""{
+			local foldername = "adofolder"
+		}
+		capture confirm string `foldername'
+        	if _rc {
+                	di as error "foldername() must be a string"
+                        error 198
+		}
+
+	
+		***DEFINE LOCALS
 		local logname = "temp_log"
 
 
@@ -41,13 +62,13 @@ program define usedpkg
 		sysdir set PLUS "`adopath_new'"
 
 		***CREATE FOLDER TO STORE LIST OF ADO-FILES
-		file open file_ados using `filename'.txt, text write replace
-
+		file open file_ados using `filename'.txt, text write `replace'
+	
 		***RUN DO-FILE
 		local rc=199
 		while `rc'==199{
 			*Run do-file in log mode
-			run_log "`logname'" "run `1'.do"
+			run_log "`logname'" "run `anything'.do"
 			local rc = `r(rc)'
 			*Check for error type
 			if `rc'==199{	// unrecognized command error
@@ -63,7 +84,8 @@ program define usedpkg
 				di "No missing ado files."
 			}
 			else{	//some other error
-				di "Some other error occured!"
+				di as error "Some other error occured"
+                        	error `rc'				
 				local rc = 0	//end the while loop
 			}
 		}
@@ -76,20 +98,23 @@ program define usedpkg
 
 		***RESTORE SETTINGS
 		sysdir set PLUS "`adopath_orig'"
-		shell rd "`adopath_new'" /s /q
 		cap erase `logname'.log
-
+		*Remove ado folder
+		if "`keepfolder'"==""{	//if option keepfolder not selected
+			shell rd "`adopath_new'" /s /q
+		}
 	}
 	restore	
 end
 
 * Run command and create log: run_log [logname] [command]
 program define run_log, rclass
+	args logname command
 	*Start log
-	cap drop `1'.log
-	log using `1', replace text
+	cap drop `logname'.log
+	log using `logname', replace text
 	*Run code with capture
-	cap `2'
+	cap `command'
 	local rc = _rc
 	*Close log
 	log close
@@ -101,8 +126,9 @@ end
 
 * Find information about missing package in log file: log_missing_pkg [logname]
 program define log_missing_pkg, rclass
+	args logname
 	*Read log file
-	file open logname using `1'.log, read
+	file open logname using `logname'.log, read
 	file read logname line
 	local missing_command = ""
 	while r(eof)==0 {
@@ -131,12 +157,13 @@ end
 
 *Install package including dependencies: install_dep [package]
 program define install_dep
+	args package
 	* Try to install from SSC
-	cap ssc install `1'
+	cap ssc install `package'
 	* Check if package works
 	preserve
 		sysuse auto
-		run_log "installlog" "`1' price mpg"
+		run_log "installlog" "`package' price mpg"
 	restore
 	local rc_check_package = `r(rc)'
 	* If error when checking package
