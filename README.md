@@ -5,12 +5,12 @@ This Stata ado-file creates a list with all packages used in the provided do-fil
 ## Installation
 Install from github:
    ```stata
-   net install ftools, from("https://raw.githubusercontent.com/VanessaSticher/usedprks/main/src/")
+   net install ftools, from("https://raw.githubusercontent.com/VanessaSticher/usedpkgs/main/src/")
    ```    
 
 Or install from github using the [github package](https://github.com/haghish/github):
    ```stata
-   github install VanessaSticher/usedpgks
+   github install VanessaSticher/usedpkgs
    ```  
 
 
@@ -21,6 +21,5 @@ Or install from github using the [github package](https://github.com/haghish/git
 ...
 
 ## Future Adjustments
-1. Improve installation of dependencies: create list of common packages and their dependencies (e.g. reghdfe requires ftools) and install dependencies first
-2. Choose to keep or delete the ado folder
-3. Assert that it works for do-files calling other do-files
+- Assert that it works for do-files calling other do-files
+- Include option to show version of packages (implementation: loop over output file and create new output file)
