@@ -1,33 +1,23 @@
 *! 0.0.1 07October2021
 
 * Program usedpkgs
-program define usedpkg 
+program define usedpkgs
 	version 16
-	syntax anything, [filename(str) foldername(str) replace keepfolder] 
+	syntax anything [, filename(str) foldername(str) replace keepfolder] 
 	preserve 
 	qui { 
 		
 		***OPTIONS
 		* File name
-		if "`filename'"==""{
+		if missing("`filename'"){
 			local filename = "packages_list"
-		}
-		capture confirm string `filename'
-        	if _rc {
-                	di as error "filename() must be a string"
-                        error 198
 		}
 
 		* Forder name
-		if "`foldername'"==""{
+		if missing("`foldername'"){
 			local foldername = "adofolder"
 		}
-		capture confirm string `foldername'
-        	if _rc {
-                	di as error "foldername() must be a string"
-                        error 198
-		}
-
+		
 	
 		***DEFINE LOCALS
 		local logname = "temp_log"
@@ -52,7 +42,6 @@ program define usedpkg
 			file read sysdir_log line
 		}
 		file close sysdir_log
-		di "`adopath_orig'"
 
 		***CREATE NEW ADO FOLDER
 		*Create new folder for ado files
@@ -68,7 +57,7 @@ program define usedpkg
 		local rc=199
 		while `rc'==199{
 			*Run do-file in log mode
-			run_log "`logname'" "run `anything'.do"
+			run_log "`logname'" "run `anything'"
 			local rc = `r(rc)'
 			*Check for error type
 			if `rc'==199{	// unrecognized command error
@@ -171,7 +160,6 @@ program define install_dep
 		* Find missing dependency in log
 		log_missing_pkg "installlog"
 		local missing_command = "`r(missing_command)'"
-		di "Missing package: `r(missing_command)'"		//delete later
 		if "`missing_command'" != ""{
 			file write file_ados "`missing_command', "
 			ssc install "`missing_command'"
