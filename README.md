@@ -23,3 +23,4 @@ Or install from github using the [github package](https://github.com/haghish/git
 ## Future Adjustments
 - Assert that it works for do-files calling other do-files
 - Include option to show version of packages (implementation: loop over output file and create new output file)
+- Make more efficient: continue running code from where it had to install a package
