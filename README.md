@@ -1,5 +1,5 @@
 # usedpgks
-This Stata ado-file creates a list with all packages used in the provided do-file(s).
+This Stata package creates a list with all packages used in the provided do-file(s).
 
 
 ## Installation
