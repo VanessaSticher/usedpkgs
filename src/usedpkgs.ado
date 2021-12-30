@@ -5,7 +5,10 @@ program define usedpkgs
 	version 16
 	syntax anything [, filename(str) foldername(str) replace keepfolder] 
 	preserve 
-	qui { 
+	qui {
+
+		***CHECK IF DO-FILE EXISTS
+		confirm file `anything' 
 		
 		***OPTIONS
 		* File name
