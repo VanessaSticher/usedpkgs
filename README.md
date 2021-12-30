@@ -16,10 +16,13 @@ Or install from github using the [github](https://github.com/haghish/github) pac
 
 ## Usage
 ### General
-usedpkgs [filename] [, filename(str) foldername(str) replace keepfolder]
-
+   ```stata
+   usedpkgs [filename] [, filename(str) foldername(str) replace keepfolder]
+   ```    
 ### Example
-usedpkgs example.do
+   ```stata
+   usedpkgs example.do
+   ```  
 
 
 ## Future Adjustments
