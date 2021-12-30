@@ -5,21 +5,25 @@ This Stata package creates a list with all packages used in the provided do-file
 ## Installation
 Install from github:
    ```stata
-   net install usedpkgs, from("https://raw.githubusercontent.com/VanessaSticher/usedpkgs/main")
+   net install usedpkgs, from("https://raw.githubusercontent.com/VanessaSticher/usedpkgs/main/src")
    ```    
-
+<!-- DOESN'T WORK WITH SUBFOLDER src
 Or install from github using the [github](https://github.com/haghish/github) package:
    ```stata
    github install VanessaSticher/usedpkgs
    ```  
-
+-->
 
 ## Usage
 ### General
-usedpkgs [filename] [, filename(str) foldername(str) replace keepfolder]
-
+   ```stata
+   usedpkgs [filename] [, filename(str) foldername(str) replace keepfolder]
+   ```    
 ### Example
-usedpkgs example.do
+Create a list with all packages used to run the do-file example.do:
+   ```stata
+   usedpkgs example.do
+   ```  
 
 
 ## Future Adjustments
