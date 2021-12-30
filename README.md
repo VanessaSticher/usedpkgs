@@ -1,4 +1,4 @@
-# usedpgks
+# usedpkgs
 This Stata package creates a list with all packages used in the provided do-file(s).
 
 
