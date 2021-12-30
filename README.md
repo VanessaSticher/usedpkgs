@@ -20,6 +20,7 @@ Or install from github using the [github](https://github.com/haghish/github) pac
    usedpkgs [filename] [, filename(str) foldername(str) replace keepfolder]
    ```    
 ### Example
+Create a list with all packages used to run the do-file example.do:
    ```stata
    usedpkgs example.do
    ```  
