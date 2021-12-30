@@ -5,4 +5,4 @@ local pwd_orig : pwd
 tempfile sysdir
 sysdir set PLUS "`pwd_orig'"
 
-usedpkgs example_code.do, replace
+usedpkgs example.do, replace
