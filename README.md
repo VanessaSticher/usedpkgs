@@ -7,12 +7,12 @@ Install from github:
    ```stata
    net install usedpkgs, from("https://raw.githubusercontent.com/VanessaSticher/usedpkgs/main/src")
    ```    
-
+<!-- DOESN'T WORK WITH SUBFOLDER src
 Or install from github using the [github](https://github.com/haghish/github) package:
    ```stata
    github install VanessaSticher/usedpkgs
    ```  
-
+-->
 
 ## Usage
 ### General
