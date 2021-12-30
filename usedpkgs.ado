@@ -70,7 +70,7 @@ program define usedpkgs
 				install_dep `missing_command'		
 			}
 			else if `rc'==0{	//no error
-				di "No missing ado files."
+				noisily di "No missing ado files."
 			}
 			else{	//some other error
 				di as error "Some other error occured"
@@ -79,7 +79,7 @@ program define usedpkgs
 			}
 		}
 	
-		di "No more missing ado files. Check file `filename'.txt for a list of all ado files."
+		noisily di "No more missing ado files. Check file `filename'.txt for a list of all ado files."
 	
 		*Close file
 		file close file_ados
@@ -90,7 +90,7 @@ program define usedpkgs
 		cap erase `logname'.log
 		*Remove ado folder
 		if "`keepfolder'"==""{	//if option keepfolder not selected
-			shell rd "`adopath_new'" /s /q
+			shell rmdir -r "`adopath_new'" /s /q
 		}
 	}
 	restore	
