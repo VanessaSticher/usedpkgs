@@ -80,7 +80,7 @@ For listing all packages (not specific to a do-file), use {help mypkg}.
 {syntab:Scalars}
 {synopt:{cmd:e(dofile)}}Name of the input do-file{p_end}
 {synopt:{cmd:e(filename)}}Name of the file containing the list of packages{p_end}
-{synopt:{cmd:e(foldername)}}Name of the folder containing the ado files (only if option {cmd:keepfolder}{p_end}
+{synopt:{cmd:e(foldername)}}Name of the folder containing the ado files (only if option {cmd:keepfolder}){p_end}
 
 
 {marker contact}{...}
@@ -88,11 +88,4 @@ For listing all packages (not specific to a do-file), use {help mypkg}.
 
 {pstd}Vanessa Sticher{break}
 {p_end}
-
-
-{marker acknowledgements}{...}
-{title:Acknowledgements}
-
-{pstd}
-Add acknowledgements here.{p_end}
 
