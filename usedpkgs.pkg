@@ -1,0 +1,8 @@
+v 0.0.1
+d 'USEDPKGS': usedpkgs
+d 
+d Distribution-Date:   20211230
+d License: MIT
+d 
+F usedpkgs.ado
+f usedpkgs.sthlp
