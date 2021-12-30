@@ -5,7 +5,7 @@ This Stata package creates a list with all packages used in the provided do-file
 ## Installation
 Install from github:
    ```stata
-   net install usedpkgs, from("https://raw.githubusercontent.com/VanessaSticher/usedpkgs/main")
+   net install usedpkgs, from("https://raw.githubusercontent.com/VanessaSticher/usedpkgs/main/src")
    ```    
 
 Or install from github using the [github](https://github.com/haghish/github) package:
