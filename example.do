@@ -11,4 +11,4 @@ outreg2 using testoutreg.doc
 
 vincenty 38.9 -77.077 39 -77.077, v(vb) h(hb)
 
-di "Do-file run successfully"
+di "Running do-file was successful."
