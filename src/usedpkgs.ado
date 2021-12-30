@@ -8,7 +8,7 @@ program define usedpkgs
 	qui {
 
 		***CHECK IF DO-FILE EXISTS
-		confirm file `anything' 
+		confirm file `anything'
 		
 		***OPTIONS
 		* File name
