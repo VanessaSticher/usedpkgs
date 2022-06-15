@@ -40,7 +40,7 @@ For listing all packages (not specific to a do-file), use {help mypkg}.
 {dlgtab:Custom names}
 
 {phang}
-{opt file:name(str)} keeps the newly created folder containing all ado files of the packages. The folder is located in the current directory and named {it:ado_usedpkgs}.
+{opt file:name(str)} specifies the name of the file listing all packages.
 
 {phang}
 {opt folder:name(str)} keeps the newly created folder containing all ado files of the packages. The folder is located in the current directory and named {it:ado_usedpkgs}.
