@@ -106,6 +106,7 @@ program define run_log, rclass
 	cap drop `logname'.log
 	log using `logname', replace text
 	*Run code with capture
+	clear
 	cap `command'
 	local rc = _rc
 	*Close log
@@ -154,7 +155,7 @@ program define install_dep
 	cap ssc install `package'
 	* Check if package works
 	preserve
-		sysuse auto
+		sysuse auto, clear
 		run_log "installlog" "`package' price mpg"
 	restore
 	local rc_check_package = `r(rc)'
