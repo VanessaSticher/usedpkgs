@@ -73,7 +73,7 @@ program define usedpkgs
 				install_dep `missing_command'		
 			}
 			else if `rc'==0{	//no error
-				//noisily di in black "No missing ado files."
+				noisily di in black "No missing ado files."
 			}
 			else{	//some other error
 				di as error "Some other error occured"
