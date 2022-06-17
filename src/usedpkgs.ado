@@ -58,35 +58,62 @@ program define usedpkgs
 	
 		***RUN DO-FILE
 		local rc=199
+		local counter = 0
 		while `rc'==199{
+			local counter = `counter' + 1
 			*Run do-file in log mode
 			run_log "`logname'" "run `anything'"
 			local rc = `r(rc)'
 			*Check for error type
-			if `rc'==199{	// unrecognized command error
+			if `rc'==0{	//no error
+				if `counter'==1{	//no error from the beginning
+					local reason = "No missing ado files."
+				}
+				else{	//all errors solved
+					local reason = "All packages installed successfully."
+				}
+			}
+			else if `rc'==199{	// unrecognized command error
 				*Find error message about missing command in log
 				log_missing_pkg "`logname'"
 				local missing_command = "`r(missing_command)'"
 				*Add missing command to list of ado files
 				file write file_ados "`missing_command', "
 				*Try to install missing command
-				install_dep `missing_command'		
-			}
-			else if `rc'==0{	//no error
-				noisily di as txt "No missing ado files."
+				install_dep `missing_command'
+				local rc_installed = `r(rc_installed)'
+				if `rc_installed'==0{
+					noisily di as txt "Package `missing_command' installed"
+				}
+				else {
+					local rc_fail_reason = cond(`rc_installed'==601, "because not found on SSC", "")
+					local reason = "Package `missing_command' could not be installed"
+					local rc = 0	//end the while loop
+				}	
 			}
 			else{	//some other error
-				di as error "Some other error occured"
-                        	error `rc'				
+				local reason = "Some other error occured"
 				local rc = 0	//end the while loop
 			}
 		}
 	
-		noisily di as txt "List of all used ado files created. Check file `filename'.txt."
+		if "`reason'" == "All packages installed successfully."{
+			noisily di as txt "List of all used ado files created. Check file `filename'.txt."
+		}
+		else if "`reason'" == "No missing ado files."{
+			noisily di as txt "`reason'"
+		}
+		else{
+			noisily di as error "Error: `reason'"	
+		}
 	
 		*Close file
 		file close file_ados
 
+		*Remove empty file if no missing ado files were found
+		if "`reason'" == "No missing ado files."{
+			cap erase `filename'.txt
+		}
 
 		***RESTORE SETTINGS
 		sysdir set PLUS "`adopath_orig'"
@@ -149,11 +176,13 @@ end
 
 
 *Install package including dependencies: install_dep [package]
-program define install_dep
+program define install_dep, rclass
 	args package
 	* Try to install from SSC
 	cap ssc install `package'
-	* Check if package works
+	local rc_installed = _rc
+	return local rc_installed = `rc_installed'
+	/* Check if package works
 	preserve
 		sysuse auto, clear
 		run_log "installlog" "`package' price mpg"
@@ -175,6 +204,7 @@ program define install_dep
 	}
 	* Drop log file
 	erase installlog.log
+	*/
 end
 
 
