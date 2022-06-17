@@ -77,18 +77,23 @@ program define usedpkgs
 				*Find error message about missing command in log
 				log_missing_pkg "`logname'"
 				local missing_command = "`r(missing_command)'"
-				*Add missing command to list of ado files
-				file write file_ados "`missing_command', "
 				*Try to install missing command
 				install_dep `missing_command'
 				local rc_installed = `r(rc_installed)'
 				if `rc_installed'==0{
 					noisily di as txt "Package `missing_command' installed"
+					*Add missing command to list of ado files
+					file write file_ados "`missing_command', "
 				}
-				else {
-					local rc_fail_reason = cond(`rc_installed'==601, "because not found on SSC", "")
-					local reason = "Package `missing_command' could not be installed"
-					local rc = 0	//end the while loop
+				else{
+					*Try common commands
+					install_common `missing_command'
+					local rc_installed = `r(rc_installed)'
+					if `rc_installed'!=0{
+						local rc_fail_reason = cond(`rc_installed'==601, "because not found on SSC", "")
+						local reason = "Package `missing_command' could not be installed"
+						local rc = 0	//end the while loop
+					}
 				}	
 			}
 			else{	//some other error
@@ -206,6 +211,39 @@ program define install_dep, rclass
 	erase installlog.log
 	*/
 end
+
+
+*Install common package: install_common [command]
+program define install_common, rclass
+	args command
+	
+	*gtools and ftools
+	foreach letter in g f{
+		local gtools_commands "fasterxtile" "gcollapse" "gcontract" "gdistinct" "gduplicates" "gegen" "gisid" "givregress" "glevelsof" "gpoisson" "gquantiles" "gregress" "greshape" "gstats" "gtop" "gtoplevelsof" "gunique" "hashsort"
+		local ftools_commands "fegen" "fcollapse" "join" "fmerge" "fisid" "flevelsof" "fsort"
+		local found = 0
+		foreach com in "``letter'tools_commands'" { 
+			if "`command'" == "`com'" { 
+				local found = 1 
+				continue, break	//break out of loop once found
+			}
+		}
+		
+		if `found' == 1{
+			ssc install `letter'tools
+			local rc_installed = _rc			
+			if `rc_installed'==0{
+				noisily di as txt "Package `letter'tools installed"
+				*Add missing command to list of ado files
+				file write file_ados "`letter'tools, "
+			}
+			continue, break
+		}
+	}
+	*Return error code
+	return local rc_installed = `rc_installed'
+end
+
 
 
 
