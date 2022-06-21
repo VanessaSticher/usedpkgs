@@ -117,7 +117,11 @@ program define usedpkgs
 		}
 	
 		*Close file
-		file close file_ados
+		cap file close file_ados
+		if _rc!=0{
+			noisily di as error "Error: file got closed before saving. Make sure that the do-file does not contain the command {bf:clear all}."
+		}
+
 
 		*Remove empty file if no missing ado files were found
 		if "`reason'" == "No missing ado files."{
