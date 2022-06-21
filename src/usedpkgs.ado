@@ -81,7 +81,7 @@ program define usedpkgs
 				install_dep `missing_command'
 				local rc_installed = `r(rc_installed)'
 				if `rc_installed'==0{
-					noisily di as txt "Package `missing_command' installed"
+					noisily di as txt "Package {bf:`missing_command'} installed"
 					*Add missing command to list of ado files
 					file write file_ados "`missing_command', "
 				}
@@ -91,11 +91,11 @@ program define usedpkgs
 					local rc_installed = `r(rc_installed)'
 					if `rc_installed'==0{
 						local packagename = "`r(packagename)'"
-						noisily di as txt "Package `packagename' installed"
+						noisily di as txt "Package {bf:`packagename'} installed"
 					}
 					else{
 						local rc_fail_reason = cond(`rc_installed'==601, "because not found on SSC", "")
-						local reason = "Package `missing_command' could not be installed"
+						local reason = "Package {bf:`missing_command'} could not be installed"
 						local rc = 0	//end the while loop
 					}
 				}	

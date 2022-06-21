@@ -27,7 +27,7 @@
 {title:Description}
 
 {pstd}
-{cmd:usedpkgs} creates a list of all packages used in a do-file. Note that the do-file must not contain the command {cmd:clear all}.
+{cmd:usedpkgs} creates a list of all packages used in a do-file. Nested do-files are allowed. Note that the do-file must not contain the command {cmd:clear all}.
 
 {pstd}
 For listing all packages (not specific to a do-file), use {help mypkg}.
