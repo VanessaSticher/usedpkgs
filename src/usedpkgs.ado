@@ -89,7 +89,11 @@ program define usedpkgs
 					*Try common commands
 					install_common `missing_command'
 					local rc_installed = `r(rc_installed)'
-					if `rc_installed'!=0{
+					if `rc_installed'==0{
+						local packagename = "`r(packagename)'"
+						noisily di as txt "Package `packagename' installed"
+					}
+					else{
 						local rc_fail_reason = cond(`rc_installed'==601, "because not found on SSC", "")
 						local reason = "Package `missing_command' could not be installed"
 						local rc = 0	//end the while loop
@@ -233,7 +237,7 @@ program define install_common, rclass
 			ssc install `letter'tools
 			local rc_installed = _rc			
 			if `rc_installed'==0{
-				noisily di as txt "Package `letter'tools installed"
+				local packagename = "`letter'tools"
 				*Add missing command to list of ado files
 				file write file_ados "`letter'tools, "
 			}
@@ -242,6 +246,8 @@ program define install_common, rclass
 	}
 	*Return error code
 	return local rc_installed = `rc_installed'
+	return local packagename = "`packagename'"
+
 end
 
 
