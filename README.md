@@ -29,3 +29,4 @@ Create a list with all packages used to run the do-file example.do:
 ## Future Adjustments
 - Include option to show version of packages (implementation: loop over output file and create new output file)
 - Make more efficient: continue running code from where it had to install a package
+- Add option to append list (and ado folder)
