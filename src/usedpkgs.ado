@@ -78,7 +78,7 @@ program define usedpkgs
 				log_missing_pkg "`logname'"
 				local missing_command = "`r(missing_command)'"
 				*Try to install missing command
-				install_dep `missing_command'
+				install_pkg `missing_command'
 				local rc_installed = `r(rc_installed)'
 				if `rc_installed'==0{
 					noisily di as txt "Package {bf:`missing_command'} installed"
@@ -196,36 +196,13 @@ end
 
 
 
-*Install package including dependencies: install_dep [package]
-program define install_dep, rclass
+*Install package including dependencies: install_pkg [package]
+program define install_pkg, rclass
 	args package
 	* Try to install from SSC
 	cap ssc install `package'
 	local rc_installed = _rc
 	return local rc_installed = `rc_installed'
-	/* Check if package works
-	preserve
-		sysuse auto, clear
-		run_log "installlog" "`package' price mpg"
-	restore
-	local rc_check_package = `r(rc)'
-	* If error when checking package
-	if `rc_check_package'!=0{
-		* Find missing dependency in log
-		log_missing_pkg "installlog"
-		local missing_command = "`r(missing_command)'"
-		if "`missing_command'" != ""{
-			file write file_ados "`missing_command', "
-			ssc install "`missing_command'"
-			local rc = _rc
-		}
-		else{
-			local rc = 0
-		}
-	}
-	* Drop log file
-	erase installlog.log
-	*/
 end
 
 
