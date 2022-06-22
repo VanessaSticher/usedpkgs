@@ -73,17 +73,18 @@ program define usedpkgs
 					local reason = "All packages installed successfully."
 				}
 			}
-			else if `rc'==199{	// unrecognized command error
+			else if `rc'==199 | `rc'==601{	// unrecognized command error; or sometimes r(601)
 				*Find error message about missing command in log
 				log_missing_pkg "`logname'"
 				local missing_command = "`r(missing_command)'"
 				*Try to install missing command
-				install_dep `missing_command'
+				install_pkg `missing_command'
 				local rc_installed = `r(rc_installed)'
 				if `rc_installed'==0{
 					noisily di as txt "Package {bf:`missing_command'} installed"
 					*Add missing command to list of ado files
 					file write file_ados "`missing_command', "
+					local rc = 199	//treat as if it was an error 199
 				}
 				else{
 					*Try common commands
@@ -179,6 +180,13 @@ program define log_missing_pkg, rclass
 			local length = `end'-`start'
 			local missing_command = substr(`"`line'"', `start', `length')	
 		}
+		*Find error message including "must have [package] (...) installed"
+		else if strpos(`"`line'"', " must have ")!=0 & strpos(`"`line'"', " installed")!=0{
+			local start = strpos(`"`line'"', "must have ") + length("must have ")
+			local length = strpos(substr(`"`line'"', `start', .), " ")-1
+			local missing_command = substr(`"`line'"', `start', `length')	
+		}
+
 		file read logname line
 	}
 	file close logname
@@ -188,36 +196,13 @@ end
 
 
 
-*Install package including dependencies: install_dep [package]
-program define install_dep, rclass
+*Install package including dependencies: install_pkg [package]
+program define install_pkg, rclass
 	args package
 	* Try to install from SSC
 	cap ssc install `package'
 	local rc_installed = _rc
 	return local rc_installed = `rc_installed'
-	/* Check if package works
-	preserve
-		sysuse auto, clear
-		run_log "installlog" "`package' price mpg"
-	restore
-	local rc_check_package = `r(rc)'
-	* If error when checking package
-	if `rc_check_package'!=0{
-		* Find missing dependency in log
-		log_missing_pkg "installlog"
-		local missing_command = "`r(missing_command)'"
-		if "`missing_command'" != ""{
-			file write file_ados "`missing_command', "
-			ssc install "`missing_command'"
-			local rc = _rc
-		}
-		else{
-			local rc = 0
-		}
-	}
-	* Drop log file
-	erase installlog.log
-	*/
 end
 
 
@@ -225,12 +210,13 @@ end
 program define install_common, rclass
 	args command
 	
-	*gtools and ftools
-	foreach letter in g f{
+	*gtools, ftools, estout
+	foreach pkg in gtools ftools estout{
 		local gtools_commands "fasterxtile" "gcollapse" "gcontract" "gdistinct" "gduplicates" "gegen" "gisid" "givregress" "glevelsof" "gpoisson" "gquantiles" "gregress" "greshape" "gstats" "gtop" "gtoplevelsof" "gunique" "hashsort"
 		local ftools_commands "fegen" "fcollapse" "join" "fmerge" "fisid" "flevelsof" "fsort"
+		local estout_commands "esttab" "estout" "eststo" "estadd" "estpost"
 		local found = 0
-		foreach com in "``letter'tools_commands'" { 
+		foreach com in "``pkg'_commands'" { 
 			if "`command'" == "`com'" { 
 				local found = 1 
 				continue, break	//break out of loop once found
@@ -238,16 +224,17 @@ program define install_common, rclass
 		}
 		
 		if `found' == 1{
-			ssc install `letter'tools
+			ssc install `pkg'
 			local rc_installed = _rc			
 			if `rc_installed'==0{
-				local packagename = "`letter'tools"
+				local packagename = "`pkg'"
 				*Add missing command to list of ado files
-				file write file_ados "`letter'tools, "
+				file write file_ados "`pkg', "
 			}
 			continue, break
 		}
 	}
+	
 	*Return error code
 	return local rc_installed = `rc_installed'
 	return local packagename = "`packagename'"
