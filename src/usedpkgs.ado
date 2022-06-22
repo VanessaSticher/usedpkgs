@@ -1,4 +1,4 @@
-*! 0.0.1 07October2021
+*! 0.0.2 21June2022
 
 * Program usedpkgs
 program define usedpkgs

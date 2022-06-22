@@ -3,7 +3,7 @@
 // DO NOT FORGET to update the version of the package, if changed!
 // for more information visit http://github.com/haghish/github
 
-make usedpkgs,  toc pkg  version(0.0.1) replace                              ///
+make usedpkgs,  toc pkg  version(0.0.2) replace                              ///
      license("MIT")                                                          ///
      author("Vanessa Sticher")                                               ///
      affiliation("")                                                         ///
