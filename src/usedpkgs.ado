@@ -73,7 +73,7 @@ program define usedpkgs
 					local reason = "All packages installed successfully."
 				}
 			}
-			else if `rc'==199 | `rc'==601{	// unrecognized command error; or sometimes r(601)
+			else if `rc'==199 | `rc'==111 | `rc'==601{	// unrecognized command error r(199); or sometimes r(111) or (601)
 				*Find error message about missing command in log
 				log_missing_pkg "`logname'"
 				local missing_command = "`r(missing_command)'"
@@ -186,6 +186,13 @@ program define log_missing_pkg, rclass
 			local length = strpos(substr(`"`line'"', `start', .), " ")-1
 			local missing_command = substr(`"`line'"', `start', `length')	
 		}
+		*Find error message including "scheme [scheme] not found"
+		else if strpos(`"`line'"', "scheme ")!=0 & strpos(`"`line'"', " not found")!=0{
+			local start = strpos(`"`line'"', "scheme ") + length("scheme ")
+			local length = strpos(substr(`"`line'"', `start', .), " ")-1
+			local missing_command = substr(`"`line'"', `start', `length')
+			local missing_command = "scheme_`missing_command'"	
+		}
 
 		file read logname line
 	}
@@ -210,6 +217,9 @@ end
 program define install_common, rclass
 	args command
 	
+	local rc_installed = 601	//start with package not found error and overwrite if found
+	local packagename = ""
+
 	*gtools, ftools, estout
 	foreach pkg in gtools ftools estout{
 		local gtools_commands "fasterxtile" "gcollapse" "gcontract" "gdistinct" "gduplicates" "gegen" "gisid" "givregress" "glevelsof" "gpoisson" "gquantiles" "gregress" "greshape" "gstats" "gtop" "gtoplevelsof" "gunique" "hashsort"
